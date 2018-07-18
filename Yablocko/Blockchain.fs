@@ -5,17 +5,20 @@ open System
 module Blockchain =
     type T = {
         Chain : Block.T list
+        Difficulty : int
     }
 
-    let create = {
-        Chain = [ Block.createInitial DateTime.Now "{}" ]
+    let create difficulty = {
+        Chain = [ Block.createInitial 0 DateTime.Now "{}" ]
+        Difficulty = difficulty
     }
 
     let getLatestBlock { Chain = chain } =
         Seq.head chain
 
     let addBlock (timeStamp : DateTime) (data : string) (blockchain : T) = {
-        Chain = (Block.create timeStamp data (getLatestBlock blockchain)) :: blockchain.Chain
+        blockchain with
+            Chain = (Block.create blockchain.Difficulty timeStamp data (getLatestBlock blockchain)) :: blockchain.Chain
     }
 
     let rec private isChainValid (chain : Block.T list) =
