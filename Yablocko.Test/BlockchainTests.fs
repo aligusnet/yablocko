@@ -63,3 +63,26 @@ let ``Blockchain with forged blocks should be invalid`` () =
     // we still can restore the blockchain
     let originalChain = {bc with Blockchain.Chain = [block2; block1; block0]}
     Blockchain.isValid originalChain |> should equal true
+
+
+[<Theory>]
+[<InlineData("A", "B", 17)>]
+let ``We should be able to create transactions`` (fromAddress, toAddress, amount) =
+    let bc = Blockchain.create difficulty
+          |> Blockchain.createTransaction fromAddress toAddress amount
+    let tran = Seq.head bc.PendingTransactions
+    tran.FromAddress |> should equal fromAddress
+    tran.ToAddress |> should equal toAddress
+    tran.Amount |> should equal amount
+
+[<Fact>]
+let ``We should be able to process pending transactions`` () =
+    let miner = "Mr. Miner"
+    let bc = Blockchain.create difficulty
+          |> Blockchain.createTransaction "A" "B" 7
+          |> Blockchain.createTransaction "C" "B" 11
+
+    let bc1 = Blockchain.processPendingTransactions miner bc
+    (Blockchain.getLatestBlock bc1).Transactions |> should equal bc.PendingTransactions
+    let rewardTransaction = Seq.head bc1.PendingTransactions
+    rewardTransaction.ToAddress |> should equal miner

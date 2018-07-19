@@ -6,11 +6,15 @@ module Blockchain =
     type T = {
         Chain : Block.T list
         Difficulty : int
+        PendingTransactions : Transaction.T list
     }
+
+    let reward = 1
 
     let create difficulty = {
         Chain = [ Block.createInitial 0 DateTime.Now [] ]
         Difficulty = difficulty
+        PendingTransactions = []
     }
 
     let getLatestBlock { Chain = chain } =
@@ -32,3 +36,15 @@ module Blockchain =
                 false
 
     let isValid {Chain = chain} = isChainValid chain
+
+    let createTransaction fromAddress toAddress amount (blockchain : T) =
+        {
+        blockchain with
+            PendingTransactions = (Transaction.create fromAddress toAddress amount) :: blockchain.PendingTransactions
+    }
+
+    let processPendingTransactions miner (blockchain : T) = {
+        blockchain with
+            Chain = (Block.create blockchain.Difficulty DateTime.Now blockchain.PendingTransactions (getLatestBlock blockchain)) :: blockchain.Chain
+            PendingTransactions = [Transaction.create "" miner reward]
+    }
