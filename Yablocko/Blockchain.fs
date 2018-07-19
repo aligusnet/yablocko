@@ -6,14 +6,14 @@ module Blockchain =
     type T = {
         Chain : Block.T list
         Difficulty : int
+        Reward : int
         PendingTransactions : Transaction.T list
     }
 
-    let reward = 1
-
-    let create difficulty = {
+    let create difficulty reward = {
         Chain = [ Block.createInitial 0 DateTime.Now [] ]
         Difficulty = difficulty
+        Reward = reward
         PendingTransactions = []
     }
 
@@ -46,5 +46,24 @@ module Blockchain =
     let processPendingTransactions miner (blockchain : T) = {
         blockchain with
             Chain = (Block.create blockchain.Difficulty DateTime.Now blockchain.PendingTransactions (getLatestBlock blockchain)) :: blockchain.Chain
-            PendingTransactions = [Transaction.create "" miner reward]
+            PendingTransactions = [Transaction.create "" miner blockchain.Reward]
     }
+
+    let getBalance address (blockchain : T) =
+        let oneWayAmount predicate = 
+            blockchain.Chain 
+            |> Seq.sumBy (fun b -> b.Transactions
+                                   |> Seq.filter predicate  
+                                   |> Seq.sumBy (fun t -> t.Amount)) 
+        let inAmount = oneWayAmount (fun t -> t.ToAddress = address)
+        let outAmount = oneWayAmount (fun t -> t.FromAddress = address)
+        inAmount - outAmount
+
+    let getPendingBalance address (blockchain : T) =
+        let oneWayAmount predicate =
+            blockchain.PendingTransactions
+            |> Seq.filter predicate
+            |> Seq.sumBy (fun t -> t.Amount)
+        let inAmount = oneWayAmount (fun t -> t.ToAddress = address)
+        let outAmount = oneWayAmount (fun t -> t.FromAddress = address)
+        inAmount - outAmount
