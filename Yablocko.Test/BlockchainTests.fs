@@ -11,6 +11,9 @@ open Yablocko
 /// Default level of mining difficulty using in tests
 let difficulty = 2
 
+let testTranList1 = [Transaction.create "A" "B" 11; Transaction.create "B" "C" 9 ]
+let testTranList2 = [Transaction.create "C" "A" 7 ]
+
 [<Fact>]
 let ``We should be able to create new Blockchain`` () =
     let bc =Blockchain.create difficulty
@@ -20,19 +23,19 @@ let ``We should be able to create new Blockchain`` () =
 [<Fact>]
 let ``We should be able to add new blocks to a Blockchain`` () =
     let bc = Blockchain.create difficulty
-          |> Blockchain.addBlock DateTime.Now "block1" 
-          |> Blockchain.addBlock DateTime.Now "block2"
+          |> Blockchain.addBlock DateTime.Now testTranList1
+          |> Blockchain.addBlock DateTime.Now testTranList2
 
     let lastBlock = Blockchain.getLatestBlock bc
     lastBlock.Index |> should equal 2
-    lastBlock.Data |> should equal "block2"
+    lastBlock.Transactions |> should equal testTranList2
     Blockchain.isValid bc |> should equal true
 
 [<Fact>]
 let ``Blockschain contains block forged previous hash should be invalid`` () =
     let bc = Blockchain.create difficulty
-          |> Blockchain.addBlock DateTime.Now "block1" 
-          |> Blockchain.addBlock DateTime.Now "block2"
+          |> Blockchain.addBlock DateTime.Now testTranList1
+          |> Blockchain.addBlock DateTime.Now testTranList2
     let [block2; block1; block0] = bc.Chain
     let originalPreviousHash = block1.PreviousHash
     let forgedHash = originalPreviousHash + "_FAKE"
@@ -47,12 +50,12 @@ let ``Blockschain contains block forged previous hash should be invalid`` () =
 [<Fact>]
 let ``Blockchain with forged blocks should be invalid`` () =
     let bc = Blockchain.create difficulty
-          |> Blockchain.addBlock DateTime.Now "block1" 
-          |> Blockchain.addBlock DateTime.Now "block2"
+          |> Blockchain.addBlock DateTime.Now testTranList2
+          |> Blockchain.addBlock DateTime.Now testTranList1
     let [block2; block1; block0] = bc.Chain
 
-    let forgedDataChain = {bc with Blockchain.Chain = [block2; {block1 with Data = "fake"}; block0]}
-    Blockchain.isValid forgedDataChain |> should equal false
+    let forgedTransChain = {bc with Blockchain.Chain = [block2; {block1 with Transactions = testTranList1}; block0]}
+    Blockchain.isValid forgedTransChain |> should equal false
 
     let forgedTimeStampChain = {bc with Blockchain.Chain = [block2; {block1 with TimeStamp = DateTime.Parse("2010-01-01")}; block0]}
     Blockchain.isValid forgedTimeStampChain |> should equal false
