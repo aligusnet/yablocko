@@ -7,6 +7,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Yablocko", "Yablocko\Yabloc
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Yablocko.Test", "Yablocko.Test\Yablocko.Test.fsproj", "{1B29EB8B-234D-49E4-9CAE-92056778CD7A}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Yablocko.App", "Yablocko.App\Yablocko.App.fsproj", "{08D2CA72-B7C0-43DD-B0E3-A92100778921}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,5 +46,17 @@ Global
 		{1B29EB8B-234D-49E4-9CAE-92056778CD7A}.Release|x64.Build.0 = Release|Any CPU
 		{1B29EB8B-234D-49E4-9CAE-92056778CD7A}.Release|x86.ActiveCfg = Release|Any CPU
 		{1B29EB8B-234D-49E4-9CAE-92056778CD7A}.Release|x86.Build.0 = Release|Any CPU
+		{08D2CA72-B7C0-43DD-B0E3-A92100778921}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08D2CA72-B7C0-43DD-B0E3-A92100778921}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08D2CA72-B7C0-43DD-B0E3-A92100778921}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{08D2CA72-B7C0-43DD-B0E3-A92100778921}.Debug|x64.Build.0 = Debug|Any CPU
+		{08D2CA72-B7C0-43DD-B0E3-A92100778921}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{08D2CA72-B7C0-43DD-B0E3-A92100778921}.Debug|x86.Build.0 = Debug|Any CPU
+		{08D2CA72-B7C0-43DD-B0E3-A92100778921}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08D2CA72-B7C0-43DD-B0E3-A92100778921}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08D2CA72-B7C0-43DD-B0E3-A92100778921}.Release|x64.ActiveCfg = Release|Any CPU
+		{08D2CA72-B7C0-43DD-B0E3-A92100778921}.Release|x64.Build.0 = Release|Any CPU
+		{08D2CA72-B7C0-43DD-B0E3-A92100778921}.Release|x86.ActiveCfg = Release|Any CPU
+		{08D2CA72-B7C0-43DD-B0E3-A92100778921}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
