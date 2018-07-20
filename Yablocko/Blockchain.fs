@@ -11,7 +11,7 @@ module Blockchain =
     }
 
     let create difficulty reward = {
-        Chain = [ Block.createInitial 0 DateTime.Now [] ]
+        Chain = [ Block.createInitial difficulty DateTime.Now [] ]
         Difficulty = difficulty
         Reward = reward
         PendingTransactions = []

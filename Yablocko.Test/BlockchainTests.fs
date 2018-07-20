@@ -17,11 +17,16 @@ let testTranList2 = [Transaction.create "C" "A" 7 ]
 
 [<Fact>]
 let ``We should be able to create new Blockchain`` () =
-    let bc =Blockchain.create difficulty reward
+    let bc = Blockchain.create difficulty reward
     (Blockchain.getLatestBlock bc).Index |> should equal 0
     Blockchain.isValid bc |> should equal true
     bc.Reward |> should equal reward
     Seq.length bc.PendingTransactions |> should equal 0
+
+[<Fact>]
+let ``Difficulty must be used to calculate genesis block's hash`` () =
+    let bc = Blockchain.create difficulty reward
+    (Blockchain.getLatestBlock bc).Hash |> should startWith (String.replicate difficulty "0")
 
 [<Fact>]
 let ``We should be able to add new blocks to a Blockchain`` () =
@@ -33,6 +38,13 @@ let ``We should be able to add new blocks to a Blockchain`` () =
     lastBlock.Index |> should equal 2
     lastBlock.Transactions |> should equal testTranList2
     Blockchain.isValid bc |> should equal true
+
+[<Fact>]
+let ``Difficulty must be used to calculate new block's hash`` () =
+    let bc = Blockchain.create difficulty reward
+          |> Blockchain.addBlock DateTime.Now testTranList1
+          |> Blockchain.addBlock DateTime.Now testTranList2
+    (Blockchain.getLatestBlock bc).Hash |> should startWith (String.replicate difficulty "0")
 
 [<Fact>]
 let ``Blockschain contains block forged previous hash should be invalid`` () =
